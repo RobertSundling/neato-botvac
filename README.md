@@ -34,15 +34,18 @@
 <!-- /code_chunk_output -->
 
 ## Introduction
+
 This document contains links to firmware images on the official Neato Robotics server for the Neato Botvac D3, D3 Pro, D4, D5, and D7 robot vacuums as well as information on how to install them, including how to bypass expired certificates.
 
 ## Firmware download links
 
-| Version   | Firmware Date | Certificate Validity | Download |
-|-----------|--------------|----------------------|----------|
-| 4.5.3_189 | 2019-10-29 | **2024-01-19 to 2025-02-19**   | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz) |
-| 4.6.0_72  | 2020-01-27  | 2019-03-20 to 2021-03-19 | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz) |
-| 4.2.0_102 | 2018-07-12  | 2018-01-17 to 2019-05-11 | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz)
+| Version   | Firmware Date | Certificate Validity         | Download   |
+|-----------|---------------|------------------------------|------------|
+| 4.5.3_189 | 2019-10-29    | **2024-01-19 to 2025-02-19** | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz) |
+| 4.6.0_72  | 2020-01-27    | 2019-03-20 to 2021-03-19     | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz) |
+| 4.2.0_102 | 2018-07-12    | 2018-01-17 to 2019-05-11     | [Download](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz) |
+
+Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
 
 ## Motivation
 
@@ -188,7 +191,7 @@ This is the latest official firmware pushed to the robots over the air before Ne
 
 As far as the current `.tgz` file as of this writing, it appears that a Vorwerk employee repackaged it on February 9, 2024 with a new, non-expired certificate. We can be thankful.
 
-In this version, the firmware `.bin` itself is identical to earlier copies. (The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware image inside the .tgz, is
+Although the firmware `.bin` file in this archive has a newer date than in earlier archives, the `.bin` itself is identical to earlier copies. (The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware image inside the .tgz, is
 `3d36076fbf3c196ef452b81d54857c75c17ac6eca24ef614aff27a8decc56ef8`.)
 
 This `.tgz` file also contains a (normally hidden) `._Signing.crt` metadata file, likely because the archive was created manually on a Macintosh computer. The good news is that this additional file does not interfere with the update procedure and does not need to be removed.

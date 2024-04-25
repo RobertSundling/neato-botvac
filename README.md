@@ -1,5 +1,7 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 Firmware
 
+**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, download the first link in the [Firmware download links](#firmware-download-links) section. It's good through February 19, 2025.
+
 ## Table of Contents
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->

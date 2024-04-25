@@ -1,10 +1,11 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 Firmware
 
-## Table of Contents {ignore=true}
+## Table of Contents
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Firmware download links](#firmware-download-links)
 - [Motivation](#motivation)

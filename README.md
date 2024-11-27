@@ -77,7 +77,10 @@ To install firmware on your Neato Botvac, you generally do *not* need to press a
 
 First, prepare a USB flash drive:
 
-1. Obtain a USB flash drive and ensure it is formatted as FAT-32. Some have said it needs to be at least 16 GB (the firmware images themselves are under 16 MB), USB mem-stick must be USB 2.0, USB 3.0 will hang in 'Copying log files'.
+1. Obtain a USB flash drive and ensure it is formatted as FAT-32 (not exFAT).
+
+   > **Note:** You may need to try a couple drives. Some users have said the drive needs to be at least 16 GB (even though the firmware images themselves are under 16 MB). Others have reported problems with USB 3.x drives, with the upgrade freezing during the "copying logs" stage, and suggest USB 2.0 drives. I've had perfect success with USB 3.x drives, myself, but if you have issues, you may wish to try another drive.
+  
 2. Create a folder on the flash drive named `RobotData`. Capitalization is important.
 3. Copy the firmware .tgz file directly into the `RobotData` folder on the flash drive. Do not extract the contents of the archive; the robot will do this itself.
 

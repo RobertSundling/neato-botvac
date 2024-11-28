@@ -215,4 +215,4 @@ Its certificate is currently expired, but this can be bypassed using the methods
 
 ## Document revisions
 
-This document was last updated on May 6, 2024. The download links worked as of that date. If you find that the links are broken, please open a GitHub issue or a pull request to update them. If you have any other information or corrections to add, please do the same.
+This document was last updated on November 27, 2024. The download links worked as of that date. If you find that the links are broken, please open a GitHub issue or a pull request to update them. If you have any other information or corrections to add, please do the same.

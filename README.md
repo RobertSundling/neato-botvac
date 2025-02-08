@@ -1,6 +1,6 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 Firmware
 
-**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, download the first link in the [Firmware download links](#firmware-download-links) section. It's good through February 19, 2025.
+**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, download the first link in the [Firmware download links](#firmware-download-links) section. It's good through **February 19, 2025** (which is unfortunately fast approaching).
 
 ## Table of Contents
 
@@ -37,15 +37,17 @@
 
 ## Introduction
 
-This document contains links to firmware images on the official Neato Robotics server for the Neato Botvac D3, D3 Pro, D4, D5, and D7 robot vacuums as well as information on how to install them, including how to bypass expired certificates.
+This document contains links to firmware images from the Internet Archive mirror of the official Neato Robotics server for the Neato Botvac D3, D3 Pro, D4, D5, and D7 robot vacuums as well as information on how to install them, including how to bypass expired certificates.
 
 ## Firmware download links
 
 | Version   | Firmware Date | Certificate Validity         | Download   |
 |-----------|---------------|------------------------------|------------|
-| 4.5.3_189 | 2019-10-29    | **2024-01-19 to 2025-02-19** | [From Neato Robotics](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz) ([Internet Archive Mirror](https://web.archive.org/web/20240506174708/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz)) |
-| 4.6.0_72  | 2020-01-27    | 2019-03-20 to 2021-03-19     | [From Neato Robotics](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz) ([Internet Archive Mirror](https://web.archive.org/web/20240506174741/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz)) |
-| 4.2.0_102 | 2018-07-12    | 2018-01-17 to 2019-05-11     | [From Neato Robotics](https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz) ([Internet Archive Mirror](https://web.archive.org/web/20240506174833/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz)) |
+| 4.5.3_189 | 2019-10-29    | **2024-01-19 to 2025-02-19** | [Internet Archive Mirror](https://web.archive.org/web/20240506174708/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz) |
+| 4.6.0_72  | 2020-01-27    | 2019-03-20 to 2021-03-19     | [Internet Archive Mirror](https://web.archive.org/web/20240506174741/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz) |
+| 4.2.0_102 | 2018-07-12    | 2018-01-17 to 2019-05-11     | [Internet Archive Mirror](https://web.archive.org/web/20240506174833/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz) |
+
+*Note: As of Feburary 8, 2025, the firmware images are no longer available directly from the official Neato Robotics server, which now returns an "Access Denied" error.* Copies are still available through the Internet Archive.
 
 Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
 
@@ -127,7 +129,7 @@ For now, you can simply move the `Signing.crt` file from a non-expired firmware 
 
 The `4.5.3_189` firmware image contains a certificate which is valid until 2025-02-19. Up to February 19, 2025, you can place the `Signing.crt` file from that `.tgz` into the `.tgz` file of another firmware image, and the robot will accept it. You can use [7-Zip](https://www.7-zip.org/) to open the `.tgz` files and replace the `Signing.crt` file.
 
-After February 19, 2025, if Vorwerk does not obtain and provide a new certificate, this method will no longer work.
+**After February 19, 2025, if Vorwerk does not obtain and provide a new certificate, this method will no longer work.**
 
 #### Advanced methods
 
@@ -199,19 +201,21 @@ As far as the current `.tgz` file as of this writing, it appears that a Vorwerk 
 Although the firmware `.bin` file in this archive has a newer date than in earlier archives, the `.bin` itself is identical to earlier copies. (The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware image inside the .tgz, is
 `3d36076fbf3c196ef452b81d54857c75c17ac6eca24ef614aff27a8decc56ef8`.)
 
-This `.tgz` file also contains a (normally hidden) `._Signing.crt` metadata file, likely because the archive was created manually on a Macintosh computer. The good news is that this additional file does not interfere with the update procedure and does not need to be removed.
+This `.tgz` file also contains a (normally hidden) `._Signing.crt` metadata file, likely because the archive was created manually on a Macintosh computer. This unnecessary, additional file does not interfere with the update procedure and does not need to be removed.
+
+*Its certificate is valid through Feburary 19, 2025.*
 
 ### 4.6.0_72
 
-Some users have reported that the `4.6.0_72` firmware was installed by Neato on their robots after RMA service. It has never been pushed to robots over the air, but it is available on the Neato server. The changes in this firmware version compared to `4.5.3_189` are not publicly documented.
+Some users have reported that the `4.6.0_72` firmware was installed by Neato on their robots after RMA service. It has never been pushed to robots over the air, but was available on the Neato server. The changes in this firmware version compared to `4.5.3_189` are not publicly documented.
 
-Its certificate is currently expired, but this can be bypassed using the methods described above.
+*Its certificate is currently expired, but this can be bypassed using the methods described above.*
 
 ### 4.2.0_102
 
 This is the [earliest documented firmware update for the Neato Botvac D7 Connected](https://shopeu.neatorobotics.com/pages/software-update-d7), and was shipped with at least some robots. If your robot shipped with this firmware, this is the version that your Botvac will revert to if you perform a factory reset. At this time, there is no known reason to install it manually.
 
-Its certificate is currently expired, but this can be bypassed using the methods described above.
+*Its certificate is currently expired, but this can be bypassed using the methods described above.*
 
 ## Document revisions
 

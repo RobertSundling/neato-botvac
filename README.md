@@ -26,12 +26,12 @@
       - [Verifying firmware signatures](#verifying-firmware-signatures)
       - [Generating your own signatures](#generating-your-own-signatures)
 - [Self-signed certificate and signature generation](#self-signed-certificate-and-signature-generation)
-  - [1. Generate a Self-Signed Certificate](#1-generate-a-self-signed-certificate)
+  - [Step 1: Generate a Self-Signed Certificate](#step-1-generate-a-self-signed-certificate)
     - [Step 1a: Create an OpenSSL Configuration File](#step-1a-create-an-openssl-configuration-file)
     - [Step 1b: Generate a Private Key and CSR](#step-1b-generate-a-private-key-and-csr)
     - [Step 1c: Generate a Self-Signed Certificate (Valid for 100 Years)](#step-1c-generate-a-self-signed-certificate-valid-for-100-years)
     - [Step 1d: Verify the Certificate](#step-1d-verify-the-certificate)
-  - [2. Signing the Firmware File](#2-signing-the-firmware-file)
+  - [Step 2: Signing the Firmware File](#step-2-signing-the-firmware-file)
     - [Step 2a: Sign the Firmware File](#step-2a-sign-the-firmware-file)
     - [Step 2b: Extract the Public Key](#step-2b-extract-the-public-key)
     - [Step 2c: Verify the Signature](#step-2c-verify-the-signature)
@@ -194,7 +194,7 @@ As a *potential* method for bypassing the certificate expiration problem, this s
 
 Note that this has not been tested on an actual robot and may not work if the robot tries to verify the certificate chain.
 
-### 1. Generate a Self-Signed Certificate
+### Step 1. Generate a Self-Signed Certificate
 
 #### Step 1a: Create an OpenSSL Configuration File
 
@@ -254,7 +254,7 @@ openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.
 openssl x509 -in Signing.crt -text -noout
 ```
 
-### 2. Signing the Firmware File
+### Step 2. Signing the Firmware File
 
 Next, we will sign `Neato_4.5.3_189.bin` using the private key and verify it using the extracted public key.
 

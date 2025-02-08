@@ -239,14 +239,14 @@ openssl req -new -newkey rsa:2048 -nodes -keyout Signing.key -out Signing.csr -c
 #### Step 1c: Generate a Self-Signed Certificate (Valid for 100 Years)
 
 ```sh
-openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.crt -extfile openssl.cnf -extensions v3_ext
+openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.crt -extfile neato.cnf -extensions v3_ext
 ```
 
 - `-req`: Indicates a CSR-based certificate generation.
 - `-days 36500`: Sets expiration to 100 years.
 - `-signkey Signing.key`: Uses the private key to self-sign.
 - `-out Signing.crt`: Saves the final certificate.
-- `-extfile openssl.cnf -extensions v3_ext`: Ensures the required X.509 extensions are included.
+- `-extfile neato.cnf -extensions v3_ext`: Ensures the required X.509 extensions are included.
 
 #### Step 1d: Verify the Certificate
 

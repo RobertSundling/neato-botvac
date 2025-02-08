@@ -26,6 +26,16 @@
       - [Verifying firmware signatures](#verifying-firmware-signatures)
       - [Generating your own signatures](#generating-your-own-signatures)
 - [Self-signed certificate and signature generation](#self-signed-certificate-and-signature-generation)
+  - [1. Generate a Self-Signed Certificate](#1-generate-a-self-signed-certificate)
+    - [Step 1a: Create an OpenSSL Configuration File](#step-1a-create-an-openssl-configuration-file)
+    - [Step 1b: Generate a Private Key and CSR](#step-1b-generate-a-private-key-and-csr)
+    - [Step 1c: Generate a Self-Signed Certificate (Valid for 100 Years)](#step-1c-generate-a-self-signed-certificate-valid-for-100-years)
+    - [Step 1d: Verify the Certificate](#step-1d-verify-the-certificate)
+  - [2. Signing the Firmware File](#2-signing-the-firmware-file)
+    - [Step 2a: Sign the Firmware File](#step-2a-sign-the-firmware-file)
+    - [Step 2b: Extract the Public Key](#step-2b-extract-the-public-key)
+    - [Step 2c: Verify the Signature](#step-2c-verify-the-signature)
+  - [Step 3: Repackage the firmware](#step-3-repackage-the-firmware)
 - [USB OTG Cable](#usb-otg-cable)
 - [Factory reset](#factory-reset)
 - [Firmware version notes](#firmware-version-notes)
@@ -146,7 +156,7 @@ There are currently at least two methods for doing this:
 
 I have not tested whether the Neato Botvac checks the validity of the signing certificate by any method other than ensuring the date is valid. For example, if the robot doesn't have hard-coded root certificates, it may not check the certificate chain. It *may*, for example, only care that the certificate is issued to `www.neato.cloud` and that it's not expired.
 
-If that is the case, it is possible the robots may accept *any* valid certificate, such as a self-signed certificate, which could permit the use of custom firmware in the future. This is worth exploring.
+If that is the case, it is possible the robots may accept *any* valid certificate, such as a [self-signed certificate](#self-signed-certificate-and-signature-generation), which could permit the use of custom firmware in the future. This is worth exploring.
 
 ##### Firmware signature format
 
@@ -178,9 +188,11 @@ If the robot does not verify the certificate chain, you could use the commands b
 
 ## Self-signed certificate and signature generation
 
-As a *potentional* method for bypassing the certificate expiration problem, this section covers generating a self-signed certificate, including the same X.509 extensions as in the original certificate, and using it to sign and verify the firmware file `Neato_4.5.3_189.bin`.
+As a *potential* method for bypassing the certificate expiration problem, this section covers generating a self-signed certificate, including the same X.509 extensions as in the original certificate, and using it to sign and verify the firmware file `Neato_4.5.3_189.bin`.
 
-**Note that this has not been tested on an actual robot and may not work if the robot tries to verify the certificate chain.**
+**Note that pre-generated `.signed` and `.crt` files, created by following the procedure below, are included in the [self-signed-files](./self-signed-files/) subdirectory of this repository. If you wish to try this method, you can use those directly and skip to the [Repackage the firmware](#step-3-repackage-the-firmware) step below.**
+
+Note that this has not been tested on an actual robot and may not work if the robot tries to verify the certificate chain.
 
 ### 1. Generate a Self-Signed Certificate
 
@@ -279,7 +291,7 @@ openssl dgst -sha256 -verify pubkey.pem -signature Neato_4.5.3_189.signed Neato_
 
 ### Step 3: Repackage the firmware
 
-Add the new `Signing.crt` and `Neato_4.5.3_189.signed` files into the .tgz file, and see what happens if you upload it to the robot. If it works, you're now set for a hundred years. If it doesn't, that's unfortunate.
+Finally, add the new `Signing.crt` and `Neato_4.5.3_189.signed` files to the .tgz file, replacing the originals. Then see what happens if you upload it to the robot. If it works, you're now set for a hundred years. If it doesn't, that's unfortunate.
 
 *Either way, let me know what happens! I have not tried this myself as my robot is currently working and I don't want to risk damaging it.*
 
@@ -330,7 +342,7 @@ This is the [earliest documented firmware update for the Neato Botvac D7 Connect
 
 As of February 8, 2025, the neato.cloud certificate [still has not been renewed according to crt.sh](https://crt.sh/?q=neato.cloud). Previously, the certificate was regularly renewed weeks in advance. Also, the official Neato Robotics download site now returns "Access Denied" messages when trying to obtain the firmware image files.
 
-This does not bode well, and unfortunately, almost certainly means that the true end of life for this firmware is indeed **February 19, 2025**. One of the methods in the [advanced methods](#advanced-methods) section will likely need to be used to bypass the firmware expiration date going forwards.
+This does not bode well and, unfortunately, almost certainly means that the true end of life for this firmware is indeed **February 19, 2025**. One of the methods in the [advanced methods](#advanced-methods) section will likely need to be used to bypass the firmware expiration date going forwards.
 
 ## Document revisions
 

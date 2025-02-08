@@ -25,6 +25,7 @@
       - [Firmware signature format](#firmware-signature-format)
       - [Verifying firmware signatures](#verifying-firmware-signatures)
       - [Generating your own signatures](#generating-your-own-signatures)
+- [Self-signed certificate and signature generation](#self-signed-certificate-and-signature-generation)
 - [USB OTG Cable](#usb-otg-cable)
 - [Factory reset](#factory-reset)
 - [Firmware version notes](#firmware-version-notes)
@@ -173,7 +174,114 @@ Verified OK
 
 ##### Generating your own signatures
 
-If the robot does not verify the certificate chain, you could use the parallel commands to the above sign any firmware file using a self-generated private key (for example, one that doesn't expire for a hundred years). If you try this, please let me know the results.
+If the robot does not verify the certificate chain, you could use the commands below in the [Self-signed certificate and signature generation](#self-signed-certificate-and-signature-generation) section to create a firmware file using a self-generated private key (for example, one that doesn't expire for a hundred years). If you try this, please let me know the results.
+
+## Self-signed certificate and signature generation
+
+As a *potentional* method for bypassing the certificate expiration problem, this section covers generating a self-signed certificate, including the same X.509 extensions as in the original certificate, and using it to sign and verify the firmware file `Neato_4.5.3_189.bin`.
+
+**Note that this has not been tested on an actual robot and may not work if the robot tries to verify the certificate chain.**
+
+### 1. Generate a Self-Signed Certificate
+
+#### Step 1a: Create an OpenSSL Configuration File
+
+Create a file named `neato.cnf` with the following contents:
+
+```ini
+[ req ]
+default_bits       = 2048
+prompt            = no
+default_md        = sha256
+distinguished_name = dn
+x509_extensions    = v3_ext
+
+[ dn ]
+CN = www.neato.cloud
+
+[ v3_ext ]
+basicConstraints = critical, CA:FALSE
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = www.neato.cloud
+DNS.2 = neato.cloud
+```
+
+#### Step 1b: Generate a Private Key and CSR
+
+Run the following command to create a new private key and a Certificate Signing Request (CSR):
+
+```sh
+openssl req -new -newkey rsa:2048 -nodes -keyout Signing.key -out Signing.csr -config neato.cnf
+```
+
+- `-newkey rsa:2048`: Creates a 2048-bit RSA key.
+- `-nodes`: No password protection on the key.
+- `-keyout Signing.key`: Saves the private key.
+- `-out Signing.csr`: Saves the CSR.
+- `-config neato.cnf`: Uses the configuration file to set the correct subject and extensions.
+
+#### Step 1c: Generate a Self-Signed Certificate (Valid for 100 Years)
+
+```sh
+openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.crt -extfile openssl.cnf -extensions v3_ext
+```
+
+- `-req`: Indicates a CSR-based certificate generation.
+- `-days 36500`: Sets expiration to 100 years.
+- `-signkey Signing.key`: Uses the private key to self-sign.
+- `-out Signing.crt`: Saves the final certificate.
+- `-extfile openssl.cnf -extensions v3_ext`: Ensures the required X.509 extensions are included.
+
+#### Step 1d: Verify the Certificate
+
+```sh
+openssl x509 -in Signing.crt -text -noout
+```
+
+### 2. Signing the Firmware File
+
+Next, we will sign `Neato_4.5.3_189.bin` using the private key and verify it using the extracted public key.
+
+#### Step 2a: Sign the Firmware File
+
+```sh
+openssl dgst -sha256 -sign Signing.key -out Neato_4.5.3_189.signed Neato_4.5.3_189.bin
+```
+
+- `-sha256`: Uses SHA-256 hashing.
+- `-sign Signing.key`: Signs using the private key.
+- `-out Neato_4.5.3_189.signed`: Saves the signature.
+
+#### Step 2b: Extract the Public Key
+
+```sh
+openssl x509 -pubkey -in Signing.crt -noout -out pubkey.pem
+```
+
+#### Step 2c: Verify the Signature
+
+```sh
+openssl dgst -sha256 -verify pubkey.pem -signature Neato_4.5.3_189.signed Neato_4.5.3_189.bin
+```
+
+- If verification is successful, OpenSSL will output:
+  ```
+  Verified OK
+  ```
+- If it fails, you'll see:
+  ```
+  Verification Failure
+  ```
+
+### Step 3: Repackage the firmware
+
+Add the new `Signing.crt` and `Neato_4.5.3_189.signed` files into the .tgz file, and see what happens if you upload it to the robot. If it works, you're now set for a hundred years. If it doesn't, that's unfortunate.
+
+*Either way, let me know what happens! I have not tried this myself as my robot is currently working and I don't want to risk damaging it.*
 
 ## USB OTG Cable
 

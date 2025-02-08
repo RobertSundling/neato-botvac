@@ -1,13 +1,13 @@
-# Neato Botvac D3, D3 Pro, D4, D5, and D7 Firmware
+# Neato Botvac D3, D3 Pro, D4, D5, and D7 firmware
 
 **Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, download the first link in the [Firmware download links](#firmware-download-links) section. It's good through **February 19, 2025** (which is unfortunately fast approaching).
 
-## Table of Contents
+## Table of contents
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
-- [Table of Contents](#table-of-contents)
+- [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Firmware download links](#firmware-download-links)
 - [Motivation](#motivation)
@@ -27,10 +27,11 @@
       - [Generating your own signatures](#generating-your-own-signatures)
 - [USB OTG Cable](#usb-otg-cable)
 - [Factory reset](#factory-reset)
-- [Firmware Version Notes](#firmware-version-notes)
+- [Firmware version notes](#firmware-version-notes)
   - [4.5.3_189](#453_189)
   - [4.6.0_72](#460_72)
   - [4.2.0_102](#420_102)
+- [Certificate end of life](#certificate-end-of-life)
 - [Document revisions](#document-revisions)
 
 <!-- /code_chunk_output -->
@@ -188,7 +189,7 @@ The specific steps to do this are [outlined in this reddit post by /u/woutske](h
 
 Of course, it is not guaranteed that this process will work or that you will always be able to do this.
 
-## Firmware Version Notes
+## Firmware version notes
 
 ### 4.5.3_189
 
@@ -217,6 +218,12 @@ This is the [earliest documented firmware update for the Neato Botvac D7 Connect
 
 *Its certificate is currently expired, but this can be bypassed using the methods described above.*
 
+## Certificate end of life
+
+As of February 8, 2025, the neato.cloud certificate [still has not been renewed according to crt.sh](https://crt.sh/?q=neato.cloud). Previously, the certificate was regularly renewed weeks in advance. Also, the official Neato Robotics download site now returns "Access Denied" messages when trying to obtain the firmware image files.
+
+This does not bode well, and unfortunately, almost certainly means that the true end of life for this firmware is indeed **February 19, 2025**. One of the methods in the [advanced methods](#advanced-methods) section will likely need to be used to bypass the firmware expiration date going forwards.
+
 ## Document revisions
 
-This document was last updated on November 27, 2024. The download links worked as of that date. If you find that the links are broken, please open a GitHub issue or a pull request to update them. If you have any other information or corrections to add, please do the same.
+This document was last updated on February 8, 2025. The download links worked as of that date. If you find that the links are broken, please open a GitHub issue or a pull request to update them. If you have any other information or corrections to add, please do the same.

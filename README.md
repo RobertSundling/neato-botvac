@@ -17,24 +17,27 @@
   - [Installing the firmware](#installing-the-firmware)
   - [After the update](#after-the-update)
 - [Updating faster](#updating-faster)
+- [USB OTG Cable](#usb-otg-cable)
 - [Firmware certificates and signatures](#firmware-certificates-and-signatures)
 - [Bypassing certificate expiration](#bypassing-certificate-expiration)
-  - [Easy method](#easy-method)
+  - [Easy bypass method](#easy-bypass-method)
   - [Working advanced methods](#working-advanced-methods)
     - [Factory reset and blocking date acquisition (easiest)](#factory-reset-and-blocking-date-acquisition-easiest)
     - [Faking the date (harder)](#faking-the-date-harder)
   - [Potential advanced method: Self-signed certificate](#potential-advanced-method-self-signed-certificate)
     - [Background](#background)
-      - [Firmware signature format](#firmware-signature-format)
-    - [Step 1: Retrieve the firmware file](#step-1-retrieve-the-firmware-file)
-    - [Step 2: Generate a Self-Signed Certificate](#step-2-generate-a-self-signed-certificate)
-      - [Step 2a: Create an OpenSSL Configuration File](#step-2a-create-an-openssl-configuration-file)
-      - [Step 2b: Generate a Private Key and CSR](#step-2b-generate-a-private-key-and-csr)
-      - [Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)](#step-2c-generate-a-self-signed-certificate-valid-for-100-years)
-    - [Step 3: Sign the Firmware File](#step-3-sign-the-firmware-file)
-    - [Step 4: Verify the Signature](#step-4-verify-the-signature)
-    - [Step 5: Repackage the firmware](#step-5-repackage-the-firmware)
-- [USB OTG Cable](#usb-otg-cable)
+    - [Automated Process Using Make](#automated-process-using-make)
+      - [Prerequisities](#prerequisities)
+      - [Creating the self-signed firmware package](#creating-the-self-signed-firmware-package)
+    - [Manual Process](#manual-process)
+      - [Step 1: Retrieve the firmware file](#step-1-retrieve-the-firmware-file)
+      - [Step 2: Generate a Self-Signed Certificate](#step-2-generate-a-self-signed-certificate)
+        - [Step 2a: Create an OpenSSL Configuration File](#step-2a-create-an-openssl-configuration-file)
+        - [Step 2b: Generate a Private Key and CSR](#step-2b-generate-a-private-key-and-csr)
+        - [Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)](#step-2c-generate-a-self-signed-certificate-valid-for-100-years)
+      - [Step 3: Sign the Firmware File](#step-3-sign-the-firmware-file)
+      - [Step 4: Verify the Signature](#step-4-verify-the-signature)
+      - [Step 5: Repackage the firmware](#step-5-repackage-the-firmware)
 - [Factory reset](#factory-reset)
 - [Firmware version notes](#firmware-version-notes)
   - [4.5.3_189](#453_189)
@@ -124,6 +127,12 @@ Connecting your robot using Neato Toolio is outside the scope of this document, 
 
 There is no known reason to keep these files, as they are likely for Neato support to diagnose issues. Deleting them does not result in the loss of any history, maps, or settings on your robot.
 
+## USB OTG Cable
+
+You will need a USB OTG ("On-The-Go") cable to connect a USB flash drive to your Neato Botvac. Your Botvac may have come with one, but there is no need to use the official cable (which sells for around $30 US).
+
+If you do not already have one, what you are looking for is an [OTG Micro USB 2.0 Male to USB Female cable](https://www.google.com/search?q=OTG+Micro+USB+2.0+Male+to+USB+Female+cable). You can find them on Amazon or eBay for a few dollars. (They are mostly used to connect USB devices to older smartphones and tablets.)
+
 ## Firmware certificates and signatures
 
 The firmware images are signed by Neato Robotics, and the certificates are valid for a certain period of time. **If the certificate has expired, the robot will *not* accept the firmware image.**
@@ -136,7 +145,7 @@ This does not bode well and, unfortunately, almost certainly means that the true
 
 ## Bypassing certificate expiration
 
-### Easy method
+### Easy bypass method
 
 For now, you can simply move the `Signing.crt` file from a non-expired firmware image to an expired one, and the robot will accept the firmware image. This is because the certificates all use the same private key, so the existing signatures remain valid.
 
@@ -166,6 +175,11 @@ If this is the case, we can make our own certificate. This section covers genera
 
 **Note that as of February 9, 2025, this has not been tested on an actual robot and it is not known if it will work. If you try this method, please let me know the results so I can update this document.**
 
+There are two ways to create a self-signed firmware package:
+
+1. Use the [automated Makefile process](#automated-process-using-make) (recommended)
+2. Follow the [manual steps](#manual-process) below
+
 #### Background
 
 The `.tgz` firmware images contain three files. For example, in `Neato_4.5.3_189.tgz`, you will find:
@@ -174,15 +188,61 @@ The `.tgz` firmware images contain three files. For example, in `Neato_4.5.3_189
 2. `Signing.crt`: The certificate used to sign the firmware image.
 3. `Neato_4.5.3_189.signed`: The signature of the firmware image.
 
-The `Signing.crt` is a certificate that Neato Robotics obtained from a certificate authority. The corresponding private key was used to sign the firmware image, generating the `.signed` file. When firmware is installed, the robot verifies the signature using the public key from the certificate file before allowing the update to proceed.
+The `Signing.crt` is a certificate that Neato Robotics obtained from a certificate authority. The corresponding private key was used to sign the firmware image, generating the `.signed` file. The certificate and signature are (thankfully) in  standard [OpenSSL](https://www.openssl.org/) format. When firmware is installed, the robot verifies the signature using the public key from the certificate file before allowing the update to proceed.
 
 The idea of this bypass method is to generate a new certificate and private key ourselves and sign the firmware image with that. If the robot simply verifies that the signature is valid, then the robot should accept the firmware image. However, if the robot verifies that the certificate came from a trusted authority then this method will not work.
 
-##### Firmware signature format
+#### Automated Process Using Make
 
-The signatures for the `.bin` firmware images are stored in separate `.signed` files in the `.tgz` archives. These signatures are (thankfully) in the standard [OpenSSL](https://www.openssl.org/) signature format.
+In the `make-self-signed-firmware` directory of this repository, you'll find a Makefile that automates the entire process of generating a self-signed firmware package for firmware version 4.5.3_189. This will work on Linux, Windows (with [MSYS2](https://www.msys2.org/) installed), and OS X.
 
-#### Step 1: Retrieve the firmware file
+##### Prerequisities
+
+You will need to have `make`, `curl`, `tar`, `awk`, `grep`, `sha256sum`, and `openssl` installed on your system. For a Windows system running MSYS2, you can install these packages with:
+
+```
+pacman -Syu
+pacman -S --needed make curl tar gawk grep coreutils openssl
+```
+
+For Ubuntu:
+
+```
+sudo apt update
+sudo apt install -y make curl tar gawk grep coreutils openssl
+```
+
+##### Creating the self-signed firmware package
+
+Simply:
+
+1. Open a terminal in the `make-self-signed-firmware` directory
+2. Run:
+   ```sh
+   make
+   ```
+
+The `Makefile` will:
+- Download the firmware from the Internet Archive
+- Verify its SHA256 checksum
+- Generate a self-signed certificate valid for 100 years
+- Sign the firmware with the new certificate
+- Verify the signature
+- Package everything into a new `.tgz` file
+- Perform final verification of the package
+
+The process provides status updates as it runs and will create a new `Neato_4.5.3_189.tgz` file in the directory when complete.
+
+If you want to start fresh, you can run:
+```sh
+make clean
+```
+
+#### Manual Process
+
+If you prefer to do things manually, you can follow these steps:
+
+##### Step 1: Retrieve the firmware file
 
 Download the firmware file from the Internet Archive and extract the `.bin` file:
 
@@ -203,9 +263,9 @@ At this point, you can either:
 1. Follow the steps below to generate your own `.signed` and `.crt` files, or
 2. Use the pre-generated `.signed` and `.crt` files provided  in the [self-signed-files](./self-signed-files/) subdirectory of this repository. You can download those and then skip directly to the [Verify the signature](#step-4-verify-the-signature) step below. If you do not have OpenSSL, may wish to simply trust that things are working and skip to [Repackage the firmware](#step-5-repackage-the-firmware).
 
-#### Step 2: Generate a Self-Signed Certificate
+##### Step 2: Generate a Self-Signed Certificate
 
-##### Step 2a: Create an OpenSSL Configuration File
+###### Step 2a: Create an OpenSSL Configuration File
 
 Create a file named `neato.cnf` with the following contents:
 
@@ -231,7 +291,7 @@ DNS.1 = www.neato.cloud
 DNS.2 = neato.cloud
 ```
 
-##### Step 2b: Generate a Private Key and CSR
+###### Step 2b: Generate a Private Key and CSR
 
 Run the following command to create a new private key and a Certificate Signing Request (CSR):
 
@@ -245,7 +305,7 @@ openssl req -new -newkey rsa:2048 -nodes -keyout Signing.key -out Signing.csr -c
 - `-out Signing.csr`: Saves the CSR.
 - `-config neato.cnf`: Uses the configuration file to set the correct subject and extensions.
 
-##### Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)
+###### Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)
 
 ```sh
 openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.crt -extfile neato.cnf -extensions v3_ext
@@ -257,7 +317,7 @@ openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.
 - `-out Signing.crt`: Saves the final certificate.
 - `-extfile neato.cnf -extensions v3_ext`: Ensures the required X.509 extensions are included.
 
-#### Step 3: Sign the Firmware File
+##### Step 3: Sign the Firmware File
 
 Next, we will sign `Neato_4.5.3_189.bin` using the private key.
 
@@ -269,7 +329,7 @@ openssl dgst -sha256 -sign Signing.key -out Neato_4.5.3_189.signed Neato_4.5.3_1
 - `-sign Signing.key`: Signs using the private key.
 - `-out Neato_4.5.3_189.signed`: Saves the signature.
 
-#### Step 4: Verify the Signature
+##### Step 4: Verify the Signature
 
 You can verify the signature using the public key in the certificate:
 
@@ -286,7 +346,7 @@ Verified OK
 
 If it is not valid, something went wrong with the steps above.
 
-#### Step 5: Repackage the firmware
+##### Step 5: Repackage the firmware
 
 Finally, create a new `.tgz` file containing the original `.bin` file and the new `Signing.crt` and `Neato_4.5.3_189.signed` files:
 
@@ -298,17 +358,12 @@ Then you're ready to see what happens if you upload it to the robot, by followin
 
 *If you attempt this method, please share your results.*
 
-## USB OTG Cable
-
-You will need a USB OTG ("On-The-Go") cable to connect a USB flash drive to your Neato Botvac. Your Botvac may have come with one, but there is no need to use the official cable (which sells for around $30 US).
-
-If you do not already have one, what you are looking for is an [OTG Micro USB 2.0 Male to USB Female cable](https://www.google.com/search?q=OTG+Micro+USB+2.0+Male+to+USB+Female+cable). You can find them on Amazon or eBay for a few dollars. (They are mostly used to connect USB devices to older smartphones and tablets.)
 
 ## Factory reset
 
 The Botvac is supposed to keep a secondary, backup firmware image from when it was originally shipped. If something goes wrong and your robot is not in a usable state, you may wish to attempt to have the bot revert to this backup image by performing a factory reset (also sometimes called a "hard reset"). This involves a process of holding down the front bumper in a certain way while pressing and releasing the power button, at certain intervals.
 
-The specific steps to do this are [outlined in this reddit post by u/woutske](https://www.reddit.com/r/botvac/comments/c7hznj/comment/esjzc1i/). Note that not all of the steps may be necessary.
+The specific steps to do this are [outlined in this reddit comment by u/woutske](https://www.reddit.com/r/botvac/comments/c7hznj/comment/esjzc1i/). Note that not all of the steps may be necessary.
 
 Of course, it is not guaranteed that this process will work or that you will always be able to do this.
 

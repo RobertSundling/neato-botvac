@@ -182,7 +182,7 @@ A Neato `.tgz` firmware images contain three files. For example, in `Neato_4.5.3
 2. `Signing.crt`: The certificate used to sign the firmware image.
 3. `Neato_4.5.3_189.signed`: The signature of the firmware image.
 
-The firmware itself is an encrypted binary file that runs on a custom Texas Instruments AM335x chip in the robot, according to extensive work done by Jiska Classen for [his PhD thesis](https://tuprints.ulb.tu-darmstadt.de/11422/). We have no way to modify the firmware itself. However, we can attempt to modify the certificate and signature files.
+The firmware itself is an encrypted binary file that runs on a custom Texas Instruments AM335x chip in the robot, according to extensive work done by Jiska Classen for [her PhD thesis](https://tuprints.ulb.tu-darmstadt.de/11422/). We have no way to modify the firmware itself. However, we can attempt to modify the certificate and signature files.
 
 The `Signing.crt` is a certificate that Neato Robotics obtained from a certificate authority. The corresponding private key was used to sign the firmware image, generating the `.signed` file. The certificate and signature are in standard [OpenSSL](https://www.openssl.org/) format.
 

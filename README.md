@@ -25,19 +25,8 @@
   - [Working advanced methods (after February 19, 2025)](#working-advanced-methods-after-february-19-2025)
     - [Factory reset and blocking date acquisition (easiest)](#factory-reset-and-blocking-date-acquisition-easiest)
     - [Faking the date (harder)](#faking-the-date-harder)
-  - [Potential advanced method: Self-signed certificate](#potential-advanced-method-self-signed-certificate)
-    - [Automated Process Using Make](#automated-process-using-make)
-      - [Prerequisities](#prerequisities)
-      - [Creating the self-signed firmware package](#creating-the-self-signed-firmware-package)
-    - [Manual Process](#manual-process)
-      - [Step 1: Retrieve the firmware file](#step-1-retrieve-the-firmware-file)
-      - [Step 2: Generate a Self-Signed Certificate](#step-2-generate-a-self-signed-certificate)
-        - [Step 2a: Create an OpenSSL Configuration File](#step-2a-create-an-openssl-configuration-file)
-        - [Step 2b: Generate a Private Key and CSR](#step-2b-generate-a-private-key-and-csr)
-        - [Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)](#step-2c-generate-a-self-signed-certificate-valid-for-100-years)
-      - [Step 3: Sign the Firmware File](#step-3-sign-the-firmware-file)
-      - [Step 4: Verify the Signature](#step-4-verify-the-signature)
-      - [Step 5: Repackage the firmware](#step-5-repackage-the-firmware)
+  - [Potential advanced methods](#potential-advanced-methods)
+    - [Signing the firmware with a self-signed certificate](#signing-the-firmware-with-a-self-signed-certificate)
 - [Firmware version notes](#firmware-version-notes)
   - [4.5.3_189](#453_189)
   - [4.6.0_72](#460_72)
@@ -170,198 +159,21 @@ Once all certificates have expired, the above easy bypass method will not work. 
 
 You can perform a factory reset on the robot so it loses its Wi-Fi settings, then remove its battery so it resets its clock, and reboot it. [Here is a tutorial from u/cof53a on reddit](https://www.reddit.com/r/NeatoRobotics/comments/13oryys/refreshed_d3_thru_d7_453_firmware_for_manual_usb/kv6bujz/). This prevents the robot from obtaining the current date, so it will accept any signed firmware image.
 
+You may also be able to simply remove the battery from your robot (so that it loses the date) then  temporarily turn off your Wi-Fi router, or block the robot from your network by blocking its MAC address in your router settings. This should prevent the robot from obtaining the current date. (However, if it stored the previous date and time in non-volatile memory, this may not work.) This has not been tested; if you try it, please open a GitHub issue or discussion on this repository to let us know how it went.
+
 #### Faking the date (harder)
 
-The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to intercept these NTP requests from the robot (such as by modifying DNS replies) to redirect them to your own NTP server. You must then configure your NTP server to return a date before the certificate expiration date.  This is not trivial.
+The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to intercept these NTP requests from the robot to redirect them to your own NTP server, using something like Pi-hole or a custom DNS server. You could then configure your NTP server to return a date before the certificate expiration date. Although not impossible, this is not trivial and requires some complicated setup.
 
-### Potential advanced method: Self-signed certificate
+### Potential advanced methods
 
-A Neato `.tgz` firmware images contain three files. For example, in `Neato_4.5.3_189.tgz`, you will find:
+#### Signing the firmware with a self-signed certificate
 
-1. `Neato_4.5.3_189.bin`: The firmware image itself.
-2. `Signing.crt`: The certificate used to sign the firmware image.
-3. `Neato_4.5.3_189.signed`: The signature of the firmware image.
+It may be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
 
-The firmware itself is an encrypted binary file that runs on a custom Texas Instruments AM335x chip in the robot, according to extensive work done by Jiska Classen for [her PhD thesis](https://tuprints.ulb.tu-darmstadt.de/11422/). We have no way to modify the firmware itself. However, we can attempt to modify the certificate and signature files.
+As of this writing, this method has not yet been tested.
 
-The `Signing.crt` is a certificate that Neato Robotics obtained from a certificate authority. The corresponding private key was used to sign the firmware image, generating the `.signed` file. The certificate and signature are in standard [OpenSSL](https://www.openssl.org/) format.
-
-When firmware is installed, the robot verifies the signature using the public key from the certificate file before allowing the update to proceed.
-
-Here is where we can potentially bypass the certificate expiration date. If the `.crt` file is used *only* for this step in the process, and is not also used to decrypt the firmware image itself, *and* if the robot does not verify the certificate chain of the `.crt` file, then we can simply generate our own certificate and private key, sign the firmware image with it, and the robot will accept the firmware image because it had a valid signature.
-
-**As of February 9, 2025, we do not know if this is the case. If you try this method, please open a GitHub issue or discussion on this repository to report your findings.**
-
-This section covers generating a self-signed certificate and using it to sign the firmware file `Neato_4.5.3_189.bin`.
-
-There are two ways to create a self-signed firmware package:
-
-1. Use the [automated Makefile process](#automated-process-using-make) (recommended).
-2. Follow the [manual steps](#manual-process) below.
-
-The manual steps are provided for educational purposes to give you a better understanding of the process used by the Makefile.
-
-#### Automated Process Using Make
-
-In the `make-self-signed-firmware` directory of this repository, you'll find a Makefile that automates the entire process of generating a self-signed firmware package for firmware version 4.5.3_189. This will work on Linux, Windows (with [MSYS2](https://www.msys2.org/) installed), and OS X.
-
-##### Prerequisities
-
-You will need to have `make`, `curl`, `tar`, `awk`, `grep`, `sha256sum`, and `openssl` installed on your system. For a Windows system running MSYS2, you can install these packages with:
-
-```
-pacman -Syu
-pacman -S --needed make curl tar gawk grep coreutils openssl
-```
-
-For Ubuntu:
-
-```
-sudo apt update
-sudo apt install -y make curl tar gawk grep coreutils openssl
-```
-
-##### Creating the self-signed firmware package
-
-Simply:
-
-1. Open a terminal in the `make-self-signed-firmware` directory
-2. Run:
-   ```sh
-   make
-   ```
-
-The `Makefile` will:
-- Download the firmware from the Internet Archive
-- Verify its SHA256 checksum
-- Generate a self-signed certificate valid for 100 years
-- Sign the firmware with the new certificate
-- Verify the signature
-- Package everything into a new `.tgz` file
-- Perform final verification of the package
-
-The process provides status updates as it runs and will create a new `Neato_4.5.3_189.tgz` file in the directory when complete.
-
-If you want to start fresh, you can run:
-```sh
-make clean
-```
-
-#### Manual Process
-
-If you prefer to do things manually, you can follow these steps:
-
-##### Step 1: Retrieve the firmware file
-
-Download the firmware file from the Internet Archive and extract the `.bin` file:
-
-```sh
-curl https://web.archive.org/web/20240506174708/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz | tar xz Neato_4.5.3_189.bin
-```
-
-You can verify that the `.bin` file is correct by comparing its SHA256 hash to the known hash:
-
-```sh
-sha256sum Neato_4.5.3_189.bin
-```
-
-The hash should be `3d36076fbf3c196ef452b81d54857c75c17ac6eca24ef614aff27a8decc56ef8`.
-
-At this point, you can either:
-
-1. Follow the steps below to generate your own `.signed` and `.crt` files, or
-2. Use the pre-generated `.signed` and `.crt` files provided  in the [self-signed-files](./self-signed-files/) subdirectory of this repository. You can download those and then skip directly to the [Verify the signature](#step-4-verify-the-signature) step below. If you do not have OpenSSL, may wish to simply trust that things are working and skip to [Repackage the firmware](#step-5-repackage-the-firmware).
-
-##### Step 2: Generate a Self-Signed Certificate
-
-###### Step 2a: Create an OpenSSL Configuration File
-
-Create a file named `neato.cnf` with the following contents:
-
-```ini
-[req]
-default_bits = 2048
-prompt = no
-default_md = sha256
-distinguished_name = dn
-x509_extensions = v3_ext
-
-[dn]
-CN = www.neato.cloud
-
-[v3_ext]
-basicConstraints = critical, CA:FALSE
-keyUsage = critical, digitalSignature, keyEncipherment
-extendedKeyUsage = serverAuth, clientAuth
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = www.neato.cloud
-DNS.2 = neato.cloud
-```
-
-###### Step 2b: Generate a Private Key and CSR
-
-Run the following command to create a new private key and a Certificate Signing Request (CSR):
-
-```sh
-openssl req -new -newkey rsa:2048 -nodes -keyout Signing.key -out Signing.csr -config neato.cnf
-```
-
-- `-newkey rsa:2048`: Creates a 2048-bit RSA key.
-- `-nodes`: No password protection on the key.
-- `-keyout Signing.key`: Saves the private key.
-- `-out Signing.csr`: Saves the CSR.
-- `-config neato.cnf`: Uses the configuration file to set the correct subject and extensions.
-
-###### Step 2c: Generate a Self-Signed Certificate (Valid for 100 Years)
-
-```sh
-openssl x509 -req -days 36500 -in Signing.csr -signkey Signing.key -out Signing.crt -extfile neato.cnf -extensions v3_ext
-```
-
-- `-req`: Indicates a CSR-based certificate generation.
-- `-days 36500`: Sets expiration to 100 years.
-- `-signkey Signing.key`: Uses the private key to self-sign.
-- `-out Signing.crt`: Saves the final certificate.
-- `-extfile neato.cnf -extensions v3_ext`: Ensures the required X.509 extensions are included.
-
-##### Step 3: Sign the Firmware File
-
-Next, we will sign `Neato_4.5.3_189.bin` using the private key.
-
-```sh
-openssl dgst -sha256 -sign Signing.key -out Neato_4.5.3_189.signed Neato_4.5.3_189.bin
-```
-
-- `-sha256`: Uses SHA-256 hashing.
-- `-sign Signing.key`: Signs using the private key.
-- `-out Neato_4.5.3_189.signed`: Saves the signature.
-
-##### Step 4: Verify the Signature
-
-You can verify the signature using the public key in the certificate:
-
-```sh
-openssl x509 -pubkey -in Signing.crt -noout -out pubkey.pem
-openssl dgst -sha256 -verify pubkey.pem -signature Neato_4.5.3_189.signed Neato_4.5.3_189.bin
-```
-
-If the signature is valid, you will see:
-
-```
-Verified OK
-```
-
-If it is not valid, something went wrong with the steps above.
-
-##### Step 5: Repackage the firmware
-
-Finally, create a new `.tgz` file containing the original `.bin` file and the new `Signing.crt` and `Neato_4.5.3_189.signed` files:
-
-```sh
-tar czf Neato_4.5.3_189_modified.tgz Neato_4.5.3_189.bin Signing.crt Neato_4.5.3_189.signed
-```
+However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository.
 
 ## Firmware version notes
 

@@ -36,7 +36,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         with:
           draft: true  # Create as draft release first
-          tag: v0.0.1
+          tag_name: v0.0.1
           files: |
             precertificate-firmware/firmware/Neato_4.2.0_102.tgz
             precertificate-firmware/firmware/Neato_4.5.3_189.tgz

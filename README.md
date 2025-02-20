@@ -233,7 +233,7 @@ The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware 
 
 This `.tgz` file also contains a (normally hidden) `._Signing.crt` metadata file, likely because the archive was created manually on a Macintosh computer. This unnecessary, additional file does not interfere with the update procedure and does not need to be removed.
 
-*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
+*The certificate contained in this firmware package is currently expired, but this can be bypassed using the methods described above.*
 
 ### 4.6.0_72
 
@@ -242,7 +242,7 @@ Some users have reported that the `4.6.0_72` firmware was installed by Neato on 
 The SHA256 hash of the `Neato_4.6.0_72.bin` file, which is the actual firmware image inside the `.tgz`, is
 `38973d99f40df5ae7a51eed8db361bfa80c1fe21a274b66df9d6b461d97d8a72`.
 
-*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
+*The certificate contained in this firmware package is currently expired, but this can be bypassed using the methods described above.*
 
 ### 4.2.0_102
 
@@ -251,7 +251,7 @@ This is the [earliest documented firmware update for the Neato Botvac D7 Connect
 The SHA256 hash of the `Neato_4.2.0_102.bin` file, which is the actual firmware image inside the `.tgz`, is
 `4c67919bf53771f730bc1c3756532079e3ed7e51bb349a03559417d4645a9fb7`.
 
-*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
+*The certificate contained in this firmware package is currently expired, but this can be bypassed using the methods described above.*
 
 ## Feedback
 

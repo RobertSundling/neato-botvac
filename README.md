@@ -1,8 +1,6 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 firmware
 
-**MAJOR UPDATE - February 19, 2025: A new certificate has just been released! I will incorporate it into this shortly.**
-
-As of February 19, 2025, all official firmware images now have expired certificates. All installations must use one of the bypass methods outlined in the [Bypassing certificate expiration](#bypassing-certificate-expiration) section.
+**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, jump to the [Firmware download links](#firmware-download-links) section. There are firmware images there that may work.
 
 ## Table of contents
 
@@ -12,6 +10,8 @@ As of February 19, 2025, all official firmware images now have expired certifica
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Firmware download links](#firmware-download-links)
+  - [Firmware downloads with non-expired certificates](#firmware-downloads-with-non-expired-certificates)
+  - [Original firmware downloads (All certificates expired)](#original-firmware-downloads-all-certificates-expired)
 - [Motivation](#motivation)
 - [Update procedure](#update-procedure)
   - [WARNING](#warning)
@@ -23,17 +23,17 @@ As of February 19, 2025, all official firmware images now have expired certifica
 - [Factory reset](#factory-reset)
 - [Firmware certificates and signatures](#firmware-certificates-and-signatures)
 - [Bypassing certificate expiration](#bypassing-certificate-expiration)
-  - [Working methods (after February 19, 2025)](#working-methods-after-february-19-2025)
+  - [Working methods](#working-methods)
     - [Factory reset and blocking date acquisition (easiest)](#factory-reset-and-blocking-date-acquisition-easiest)
     - [Faking the date (harder)](#faking-the-date-harder)
-  - [Potential advanced methods](#potential-advanced-methods)
+  - [Potential methods](#potential-methods)
+    - [Replacing the certificate with a precertificate](#replacing-the-certificate-with-a-precertificate)
     - [Signing the firmware with a self-signed certificate](#signing-the-firmware-with-a-self-signed-certificate)
-  - [Old bypass method (through February 19, 2025)](#old-bypass-method-through-february-19-2025)
 - [Firmware version notes](#firmware-version-notes)
   - [4.5.3_189](#453_189)
   - [4.6.0_72](#460_72)
   - [4.2.0_102](#420_102)
-- [Document revisions](#document-revisions)
+- [Feedback](#feedback)
 
 <!-- /code_chunk_output -->
 
@@ -43,17 +43,34 @@ This document contains links to firmware images from the Internet Archive mirror
 
 ## Firmware download links
 
+### Firmware downloads with non-expired certificates
+
+These are the official firmware packages but with the expired certificate replaced by non-expired certificates. The firmware images themselves are unchanged.
+
+**If you try one of these firmware images, whether or not your robot accepts the firmware, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings. As of February 20, 2025, we do not yet know if they work.**
+
+| Version   | Firmware Date | Certificate Validity         | Download   |
+|-----------|---------------|------------------------------|------------|
+| **4.5.3_189** | **2019-10-29**    | **2025-02-18 to 2026-03-19** | **[Neato_4.5.3_189.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.5.3_189.tgz)** |
+| **4.5.3_189** | **2019-10-29**    | **2025-02-20 to 2125-01-27** | **[Neato_4.5.3_189.tgz (self-signed certificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-self-signed/Neato_4.5.3_189.tgz)** |
+| 4.6.0_72  | 2020-01-27    | 2025-02-18 to 2026-03-19 | [Neato_4.6.0_72.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.6.0_72.tgz) |
+| 4.2.0_102 | 2018-07-12    | 2025-02-18 to 2026-03-19 | [Neato_4.2.0_102.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.2.0_102.tgz) |
+
+Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
+
+**It is up to you whether to try the precertificate or self-signed certificate version.** *We do not yet know if the robot will accept either of these.* The best case would be if it accepts the self-signed firmware, as this is good for 100 years. Next best would be the precertificate firmware, which would be good until March 2026.
+
+Therefore, the best course of action is probably to try the self-signed version first, and if that does not work, try the precertificate version. If neither of those work, you will need to try an original firmware with the expired certificate, below, and use a [bypass method](#bypassing-certificate-expiration) to install it.
+
+### Original firmware downloads (All certificates expired)
+
+These are the original firmware images and signatures, now all with expired certificates. Additionally, as of February 8, 2025, the firmware images are no longer available directly from the official Neato Robotics server, which now returns an "Access Denied" error. Copies remain accessible through the Internet Archive.
+
 | Version   | Firmware Date | Certificate Validity         | Download   |
 |-----------|---------------|------------------------------|------------|
 | 4.5.3_189 | 2019-10-29    | 2024-01-19 to 2025-02-19 | [Neato_4.5.3_189.tgz (via Internet Archive)](https://web.archive.org/web/20240506174708/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.5.3_189.tgz) |
 | 4.6.0_72  | 2020-01-27    | 2019-03-20 to 2021-03-19     | [Neato_4.6.0_72.tgz (via Internet Archive)](https://web.archive.org/web/20240506174741/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.6.0_72.tgz) |
 | 4.2.0_102 | 2018-07-12    | 2018-01-17 to 2019-05-11     | [Neato_4.2.0_102.tgz (via Internet Archive)](https://web.archive.org/web/20240506174833/https://neatorobotics-ota.s3.amazonaws.com/production/Neato_4.2.0_102.tgz) |
-
-Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
-
-**Note:** *As of February 8, 2025, the firmware images are no longer available directly from the official Neato Robotics server, which now returns an "Access Denied" error.* Copies remain accessible through the Internet Archive.
-
-**Note:** *As of February 19, 2025, all firmware images now have expired certificates.*
 
 ## Motivation
 
@@ -75,11 +92,9 @@ I created this document to share what I learned while exploring the options to u
 
 You may wish to read the [Updating faster](#updating-faster) section below to speed up the install process.
 
-To install firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
+If you need to install firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
 
 ### Installing the firmware
-
-Once you have bypassed the certificate expiration, you are ready to go.
 
 To install firmware on your Neato Botvac, you generally do *not* need to press any buttons or perform a [factory reset](#factory-reset) on your robot. You really only have to plug in a flash drive and the robot handles the rest.
 
@@ -141,47 +156,65 @@ The firmware images are signed by Neato Robotics, and the certificates are valid
 
 This has, historically, been the largest stumbling block to updating firmware outside of the Neato app.
 
-Further, as of February 8, 2025, the neato.cloud certificate [still has not been renewed according to crt.sh](https://crt.sh/?q=neato.cloud). Previously, the certificate was regularly renewed weeks in advance. Also, the official Neato Robotics download site now returns "Access Denied" messages when trying to obtain the firmware image files.
-
-This does not bode well and, unfortunately, almost certainly means that the true end of life for this firmware is indeed **February 19, 2025**. One of the methods in the [Working advanced methods](#working-advanced-methods-after-february-19-2025) section will likely need to be used to bypass the firmware expiration date going forwards.
+Although the neato.cloud certificate [was renewed according to crt.sh](https://crt.sh/?q=neato.cloud), we do not have a copy of the full certificate, only the precertificate. A precertificates may or may not work. It depends on exactly what the robot checks, and we do not yet know.
 
 ## Bypassing certificate expiration
 
-### Working methods (after February 19, 2025)
+### Working methods
 
-Now that all known certificates have expired, you must install the firmware by tricking the robot into believing the date is before the certificate expiration date.
+If you must install firmware with an expired certificate, you need to trick the robot into believing the date is before the certificate expiration date.
 
 #### Factory reset and blocking date acquisition (easiest)
 
 **This is currently the recommended method for use after February 19, 2025.**
 
-You may be able to first remove the battery from your robot (so that it loses the date), then temporarily turn off your Wi-Fi router, or otherwise block the robot from your network by blocking its MAC address in your router settings, or bringing it to someone else's house (for example), then reinstall the battery. This should prevent the robot from obtaining the current date when it starts. (Note: If the robot stored the previous date and time somewhere in non-volatile memory, this may not work. Whether or not it does this is unknown. Therefore, if you try this, please open a GitHub issue or discussion on this repository to let us know how it went.)
-
 The idea is to prevent the robot from obtaining the current date, so it will accept any signed firmware image regardless of the expiration date.
 
-If you do not wish to turn off your Wi-Fi router to block the robot from obtaining the date, you can instead delete your Wi-Fi network from the robot, disconnect the battery, then reinstall it. For example, you can perform a factory reset on the robot so it loses its Wi-Fi settings, then remove its battery so that the robot resets its clock, then reinstall the battery. [Here is a tutorial from u/cof53a on reddit](https://www.reddit.com/r/NeatoRobotics/comments/13oryys/refreshed_d3_thru_d7_453_firmware_for_manual_usb/kv6bujz/).
+You may be able to first remove the battery from your robot (so that it loses the current time). Once your robot is without power, you need to prevent the robot from connecting to your Wi-Fi network when it turns back on. Some methods to do this include:
+
+* Temporarily turning off your Wi-Fi router, or 
+* Changing your Wi-Fi SSID or password, or
+* Blocking its MAC address in your router settings, or 
+* Bringing it to someone else's house (for example), or
+* Deleting your Wi-Fi network from the robot
+
+*Some of those are easier than others, and many may cause other issues, so be careful. If you are unsure about these, taking it to someone else's house is the easiest option. Be sure to bring your charging base.*
+
+Once you have done one of those, then reinstall the battery. The robot should turn back on but be unable to obtain the current date and time.
+
+**Important note:** If the robot stores the last-known date and time somewhere in non-volatile memory, this may not work. It might just reset to that. Whether or not it does this is unknown. Therefore, if you try this, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.
+
+There is also a guaranteed known-working way to do this. You can instead do a full factory reset on your robot, disconnect the battery, then reinstall it. [Here is a tutorial from u/cof53a on reddit](https://www.reddit.com/r/NeatoRobotics/comments/13oryys/refreshed_d3_thru_d7_453_firmware_for_manual_usb/kv6bujz/). However, a factory reset should generally be avoided if possible, so only try this if nothing else works.
 
 #### Faking the date (harder)
 
-The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to redirect the robot to your own NTP server, using something like Pi-hole or a custom DNS server. You could then configure your own NTP server to return a date before the certificate expiration date. Although not impossible, this is not trivial and requires fairly complicated setup, beyond the scope of this guide.
+The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to redirect the robot to your own NTP server, using something like Pi-hole or a custom DNS server. You could then configure your own NTP server to return a date before the certificate expiration date.
 
-### Potential advanced methods
+Explaining how to do this is beyond the scope of this document and is left as an exercise for advanced readers.
 
-#### Signing the firmware with a self-signed certificate
-
-It may be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
-
-As of this writing, this method has not yet been tested.
-
-However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository.
-
-### Old bypass method (through February 19, 2025)
+### Potential methods
 
 In the past, you could have simply moved the `Signing.crt` file from a non-expired firmware image to an expired one, and the robot would accept the firmware image. This is because the certificates all use the same private key, so the existing signatures remain valid.
 
 The `4.5.3_189` firmware image contains a certificate which was valid until 2025-02-19. Up to February 19, 2025, you could have placed the `Signing.crt` file from that `.tgz` into the `.tgz` file of another firmware image, using a program like [7-Zip](https://www.7-zip.org/) to open the `.tgz` files and replace the `Signing.crt` file, and the robot would have accepted it.
 
-**As of February 19, 2025, since Vorwerk did not obtain and provide a new certificate, this method no longer works.**
+Now we need to replace the `Signing.crt` file with something else. There are two potential things we can try.
+
+#### Replacing the certificate with a precertificate
+
+It may be possible to replace the expired certificate with a non-expired neato.cloud precertificate. For example, there is a neato.cloud precertificate that expires in March 2026.
+
+*As of this writing, this method has not yet been tested.*
+
+Full details on this method are provided in the [Precertificate Firmware](./precertificate-firmware/README.md) directory of this repository. You can also download firmware images created in this way directly from the [links above](#firmware-download-links).
+
+#### Signing the firmware with a self-signed certificate
+
+It may be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
+
+*As of this writing, this method has not yet been tested.*
+
+However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository. You can also download a firmware image created in this way directly from the [link above](#firmware-download-links).
 
 ## Firmware version notes
 
@@ -193,25 +226,33 @@ This is the latest official firmware pushed to the robots over the air before Ne
 
 As far as the current `.tgz` file as of this writing, it appears that a Vorwerk employee repackaged it on February 9, 2024 with a certificate valid through February 19, 2025.
 
-Although the firmware `.bin` file in this archive has a newer date than in earlier archives, the `.bin` itself is identical to earlier copies. (The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware image inside the `.tgz`, is
-`3d36076fbf3c196ef452b81d54857c75c17ac6eca24ef614aff27a8decc56ef8`.)
+Although the firmware `.bin` file in this archive has a newer date than in earlier archives, the `.bin` itself is identical to earlier copies.
+
+The SHA256 hash of the `Neato_4.5.3_189.bin` file, which is the actual firmware image inside the `.tgz`, is
+`3d36076fbf3c196ef452b81d54857c75c17ac6eca24ef614aff27a8decc56ef8`.
 
 This `.tgz` file also contains a (normally hidden) `._Signing.crt` metadata file, likely because the archive was created manually on a Macintosh computer. This unnecessary, additional file does not interfere with the update procedure and does not need to be removed.
 
-*Its certificate is currently expired, but this can be bypassed using the methods described above.*
+*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
 
 ### 4.6.0_72
 
 Some users have reported that the `4.6.0_72` firmware was installed by Neato on their robots after RMA service. It has never been pushed to robots over the air, but was available on the Neato server. The changes in this firmware version compared to `4.5.3_189` are not publicly documented.
 
-*Its certificate is currently expired, but this can be bypassed using the methods described above.*
+The SHA256 hash of the `Neato_4.6.0_72.bin` file, which is the actual firmware image inside the `.tgz`, is
+`38973d99f40df5ae7a51eed8db361bfa80c1fe21a274b66df9d6b461d97d8a72`.
+
+*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
 
 ### 4.2.0_102
 
 This is the [earliest documented firmware update for the Neato Botvac D7 Connected](https://shopeu.neatorobotics.com/pages/software-update-d7), and was shipped with at least some robots. If your robot shipped with this firmware, this is the version that your Botvac will revert to if you perform a factory reset. At this time, there is no known reason to install it manually.
 
-*Its certificate is currently expired, but this can be bypassed using the methods described above.*
+The SHA256 hash of the `Neato_4.2.0_102.bin` file, which is the actual firmware image inside the `.tgz`, is
+`4c67919bf53771f730bc1c3756532079e3ed7e51bb349a03559417d4645a9fb7`.
 
-## Document revisions
+*The certificate contained in this firmware page is currently expired, but this can be bypassed using the methods described above.*
 
-This document was last updated on February 19, 2025. The download links worked as of that date. If you find that the links are broken, please submit a GitHub issue or pull request to update them. If you have any other information or corrections to add, please do the same.
+## Feedback
+
+If you try one of these firmware images, whether or not your robot accepts the firmware, or if you notice any problems with or have any suggestions for this document, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.

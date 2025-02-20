@@ -33,26 +33,37 @@ jobs:
           cd self-signed-firmware/automated
           make
 
-      - name: Create Release
-        id: create_release
+      - name: Create Precertificate Release
+        id: create_precert_release
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
         with:
-          draft: true  # Create as draft release first
-          tag_name: v0.0.1
+          draft: true
+          tag_name: v0.0.1-precert
           files: |
             precertificate-firmware/firmware/Neato_4.2.0_102.tgz
             precertificate-firmware/firmware/Neato_4.5.3_189.tgz
             precertificate-firmware/firmware/Neato_4.6.0_72.tgz
-            self-signed-firmware/automated/Neato_4.5.3_189.tgz
-          name: Firmware Release
+          name: Precertificate-signed Firmware Release
           body: |
-            This release contains:
-            - Precertificate firmware versions:
-              - 4.2.0_102
-              - 4.5.3_189
-              - 4.6.0_72
-            - Self-signed firmware version:
-              - 4.5.3_189
+            Precertificate-signed firmware versions:
+            - 4.2.0_102
+            - 4.5.3_189
+            - 4.6.0_72
+      
+      - name: Create Self-signed Release
+        id: create_self_signed_release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          draft: true
+          tag_name: v0.0.1-self-signed
+          files: |
+            self-signed-firmware/automated/Neato_4.5.3_189.tgz
+          name: Self-signed Firmware Release
+          body: |
+            Self-signed firmware version:
+            - 4.5.3_189
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

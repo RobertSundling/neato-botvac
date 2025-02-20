@@ -1,0 +1,54 @@
+name: Build and Release Firmware
+
+on:
+  # For testing, we'll trigger manually
+  workflow_dispatch:
+  # Later, uncomment to trigger on specific tags
+  # push:
+  #   tags:
+  #     - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install -y make curl tar gawk grep coreutils openssl
+
+      - name: Build precertificate firmware
+        run: |
+          cd precertificate-firmware
+          make
+
+      - name: Build self-signed firmware
+        run: |
+          cd self-signed-firmware/automated
+          make
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          draft: true  # Create as draft release first
+          files: |
+            precertificate-firmware/firmware/Neato_4.2.0_102.tgz
+            precertificate-firmware/firmware/Neato_4.5.3_189.tgz
+            precertificate-firmware/firmware/Neato_4.6.0_72.tgz
+            self-signed-firmware/automated/Neato_4.5.3_189.tgz
+          name: Firmware Release
+          body: |
+            This release contains:
+            - Precertificate firmware versions:
+              - 4.2.0_102
+              - 4.5.3_189
+              - 4.6.0_72
+            - Self-signed firmware version:
+              - 4.5.3_189
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

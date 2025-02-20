@@ -1,6 +1,8 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 firmware
 
-**Note:** Unfortunately, as of February 19, 2025, all official firmware images now have expired certificates. All installations must use one of the bypass methods outlined in the [Bypassing certificate expiration](#bypassing-certificate-expiration) section.
+**MAJOR UPDATE - February 19, 2025: A new certificate has just been released! I will incorporate it into this shortly.**
+
+As of February 19, 2025, all official firmware images now have expired certificates. All installations must use one of the bypass methods outlined in the [Bypassing certificate expiration](#bypassing-certificate-expiration) section.
 
 ## Table of contents
 

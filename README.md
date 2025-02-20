@@ -51,8 +51,8 @@ These are the official firmware packages but with the expired certificate replac
 
 | Version   | Firmware Date | Certificate Validity         | Download   |
 |-----------|---------------|------------------------------|------------|
-| **4.5.3_189** | **2019-10-29**    | **2025-02-18 to 2026-03-19** | **[Neato_4.5.3_189.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.5.3_189.tgz)** |
 | **4.5.3_189** | **2019-10-29**    | **2025-02-20 to 2125-01-27** | **[Neato_4.5.3_189.tgz (self-signed certificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-self-signed/Neato_4.5.3_189.tgz)** |
+| **4.5.3_189** | **2019-10-29**    | **2025-02-18 to 2026-03-19** | **[Neato_4.5.3_189.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.5.3_189.tgz)** |
 | 4.6.0_72  | 2020-01-27    | 2025-02-18 to 2026-03-19 | [Neato_4.6.0_72.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.6.0_72.tgz) |
 | 4.2.0_102 | 2018-07-12    | 2025-02-18 to 2026-03-19 | [Neato_4.2.0_102.tgz (precertificate)](https://github.com/RobertSundling/neato-botvac/releases/download/v0.0.1-precert/Neato_4.2.0_102.tgz) |
 

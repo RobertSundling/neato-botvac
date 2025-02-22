@@ -23,12 +23,12 @@
 - [Factory reset](#factory-reset)
 - [Firmware certificates and signatures](#firmware-certificates-and-signatures)
 - [Bypassing certificate expiration](#bypassing-certificate-expiration)
-  - [Working methods](#working-methods)
-    - [Factory reset and blocking date acquisition (easiest)](#factory-reset-and-blocking-date-acquisition-easiest)
-    - [Faking the date (harder)](#faking-the-date-harder)
-  - [Potential methods](#potential-methods)
+  - [Replacing the certificate](#replacing-the-certificate)
     - [Replacing the certificate with a precertificate](#replacing-the-certificate-with-a-precertificate)
     - [Signing the firmware with a self-signed certificate](#signing-the-firmware-with-a-self-signed-certificate)
+  - [Faking the date](#faking-the-date)
+    - [Blocking date acquisition (easiest)](#blocking-date-acquisition-easiest)
+    - [Faking the date via NTP (harder)](#faking-the-date-via-ntp-harder)
 - [Firmware version notes](#firmware-version-notes)
   - [4.5.3_189](#453_189)
   - [4.6.0_72](#460_72)
@@ -47,7 +47,7 @@ This document contains links to firmware images from the Internet Archive mirror
 
 These are the official firmware packages but with the expired certificate replaced by non-expired certificates. The firmware images themselves are unchanged.
 
-**If you try one of these firmware images, whether or not your robot accepts the firmware, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings. As of February 20, 2025, we do not yet know if they work.**
+**If you try the self-signed firmware image, whether or not your robot accepts the firmware, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings. As of February 20, 2025, we do not yet know if it works.**
 
 | Version   | Firmware Date | Certificate Validity         | Download   |
 |-----------|---------------|------------------------------|------------|
@@ -58,9 +58,9 @@ These are the official firmware packages but with the expired certificate replac
 
 Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
 
-**It is up to you whether to try the precertificate or self-signed certificate version.** *We do not yet know if the robot will accept either of these.* The best case would be if it accepts the self-signed firmware, as this is good for 100 years. Next best would be the precertificate firmware, which would be good until March 2026.
+**It is up to you whether to try the precertificate or self-signed certificate version.** The precertificate firmware [has been confirmed to work](https://github.com/RobertSundling/neato-botvac/discussions/6), so that one can be installed through at least March 2026. *We do not yet know if the robot will accept the self-signed firmware.* If it does, it will be installable for the next hundred years.
 
-Therefore, the best course of action is probably to try the self-signed version first, and if that does not work, try the precertificate version. If neither of those work, you will need to try an original firmware with the expired certificate, below, and use a [bypass method](#bypassing-certificate-expiration) to install it.
+If you are feeling adventurous, try the self-signed version first. If that does not work, use the precertificate version.
 
 ### Original firmware downloads (All certificates expired)
 
@@ -92,7 +92,7 @@ I created this document to share what I learned while exploring the options to u
 
 You may wish to read the [Updating faster](#updating-faster) section below to speed up the install process.
 
-If you need to install firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
+If you are reading this after March 2026 and you need to install firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
 
 ### Installing the firmware
 
@@ -156,17 +156,39 @@ The firmware images are signed by Neato Robotics, and the certificates are valid
 
 This has, historically, been the largest stumbling block to updating firmware outside of the Neato app.
 
-Although the neato.cloud certificate [was renewed according to crt.sh](https://crt.sh/?q=neato.cloud), we do not have a copy of the full certificate, only the precertificate. A precertificates may or may not work. It depends on exactly what the robot checks, and we do not yet know.
+Although the neato.cloud certificate [was renewed according to crt.sh](https://crt.sh/?q=neato.cloud), we do not have a copy of the full certificate, only the precertificate. However, it has been confirmed that the robot accepts a precertificate just like a regular certificate.
 
 ## Bypassing certificate expiration
 
-### Working methods
+### Replacing the certificate
 
-If you must install firmware with an expired certificate, you need to trick the robot into believing the date is before the certificate expiration date.
+In the past, you could have moved the `Signing.crt` file from a non-expired firmware image to an expired one, and the robot would accept the firmware image. This is because the certificates all use the same private key, so the existing signatures remain valid.
 
-#### Factory reset and blocking date acquisition (easiest)
+The `4.5.3_189` firmware image contains a certificate which was valid until 2025-02-19. Up to February 19, 2025, you could have placed the `Signing.crt` file from that `.tgz` into the `.tgz` file of another firmware image, using a program like [7-Zip](https://www.7-zip.org/) to open the `.tgz` files and replace the `Signing.crt` file, and the robot would have accepted it.
 
-**This is currently the recommended method for use after February 19, 2025.**
+Now we need to replace the `Signing.crt` file with something else. We have two options.
+
+#### Replacing the certificate with a precertificate
+
+**This is currently the recommended method to use as of Feburary 22, 2025, as it is known to work.**
+
+It is possible to replace the expired certificate with a non-expired neato.cloud precertificate. For example, there is a neato.cloud precertificate that expires in March 2026.
+
+Full details on this method are provided in the [Precertificate Firmware](./precertificate-firmware/README.md) directory of this repository. Rather than read that, alternatively you can simply download ready-to-use firmware images created in this way directly from the [links above](#firmware-download-links).
+
+#### Signing the firmware with a self-signed certificate
+
+It *may* be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
+
+*As of this writing, this method has not yet been tested.*
+
+However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository. You can also download a ready-to-use firmware image created in this way directly from the [link above](#firmware-download-links).
+
+### Faking the date
+
+If you *must* install firmware with an expired certificate, you need to trick the robot into believing the date is before the certificate expiration date.
+
+#### Blocking date acquisition (easiest)
 
 The idea is to prevent the robot from obtaining the current date, so it will accept any signed firmware image regardless of the expiration date.
 
@@ -186,35 +208,12 @@ Once you have done one of those, then reinstall the battery. The robot should tu
 
 There is also a guaranteed known-working way to do this. You can instead do a full factory reset on your robot, disconnect the battery, then reinstall it. [Here is a tutorial from u/cof53a on reddit](https://www.reddit.com/r/NeatoRobotics/comments/13oryys/refreshed_d3_thru_d7_453_firmware_for_manual_usb/kv6bujz/). However, a factory reset should generally be avoided if possible, so only try this if nothing else works.
 
-#### Faking the date (harder)
+#### Faking the date via NTP (harder)
 
 The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to redirect the robot to your own NTP server, using something like Pi-hole or a custom DNS server. You could then configure your own NTP server to return a date before the certificate expiration date.
 
 Explaining how to do this is beyond the scope of this document and is left as an exercise for advanced readers.
 
-### Potential methods
-
-In the past, you could have simply moved the `Signing.crt` file from a non-expired firmware image to an expired one, and the robot would accept the firmware image. This is because the certificates all use the same private key, so the existing signatures remain valid.
-
-The `4.5.3_189` firmware image contains a certificate which was valid until 2025-02-19. Up to February 19, 2025, you could have placed the `Signing.crt` file from that `.tgz` into the `.tgz` file of another firmware image, using a program like [7-Zip](https://www.7-zip.org/) to open the `.tgz` files and replace the `Signing.crt` file, and the robot would have accepted it.
-
-Now we need to replace the `Signing.crt` file with something else. There are two potential things we can try.
-
-#### Replacing the certificate with a precertificate
-
-It may be possible to replace the expired certificate with a non-expired neato.cloud precertificate. For example, there is a neato.cloud precertificate that expires in March 2026.
-
-*As of this writing, this method has not yet been tested.*
-
-Full details on this method are provided in the [Precertificate Firmware](./precertificate-firmware/README.md) directory of this repository. You can also download firmware images created in this way directly from the [links above](#firmware-download-links).
-
-#### Signing the firmware with a self-signed certificate
-
-It may be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
-
-*As of this writing, this method has not yet been tested.*
-
-However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository. You can also download a firmware image created in this way directly from the [link above](#firmware-download-links).
 
 ## Firmware version notes
 

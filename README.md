@@ -116,6 +116,8 @@ At this point, I suggest having the robot fully charged and on its charging base
 
 In my experience, if I have cleared the log files first (as explained in the [Updating faster](#updating-faster) section), the update process only takes a minute or two.
 
+**Note:** [At least one user](https://github.com/RobertSundling/neato-botvac/discussions/6) had to power-cycle the robot after the upgrade process was complete (after it rebooted on its own) to get the new firmware to take effect. If the new firmware does not appear to be installed, you may wish to try powering the robot off and back on again.
+
 **You would be well-advised to *not* interrupt a firmware update while in progress.** 
 
 ### After the update

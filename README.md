@@ -1,6 +1,6 @@
 # Neato Botvac D3, D3 Pro, D4, D5, and D7 firmware
 
-**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, jump to the [Firmware download links](#firmware-download-links) section. There are firmware images there that may work.
+**Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, jump to the [Firmware download links](#firmware-download-links) section. There are working firmware images there.
 
 ## Table of contents
 
@@ -47,7 +47,7 @@ This document contains links to firmware images from the Internet Archive mirror
 
 These are the official firmware packages but with the expired certificate replaced by non-expired certificates. The firmware images themselves are unchanged.
 
-**If you try the self-signed firmware image, whether or not your robot accepts the firmware, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings. As of February 20, 2025, we do not yet know if it works.**
+**If you try any of these firmware images, whether or not your robot accepts the firmware through [the update process below](#installing-the-firmware), please create a [GitHub discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings. I am still collecting information to refine and streamline the installation process.**
 
 | Version   | Firmware Date | Certificate Validity         | Download   |
 |-----------|---------------|------------------------------|------------|
@@ -58,9 +58,7 @@ These are the official firmware packages but with the expired certificate replac
 
 Most users should choose `4.5.3_189`. See the [Firmware Version Notes](#firmware-version-notes) section below for more information on these firmware versions.
 
-**It is up to you whether to try the precertificate or self-signed certificate version.** The precertificate firmware [has been confirmed to work](https://github.com/RobertSundling/neato-botvac/discussions/6), so that one can be installed through at least March 2026. *We do not yet know if the robot will accept the self-signed firmware.* If it does, it will be installable for the next hundred years.
-
-If you are feeling adventurous, try the self-signed version first. If that does not work, use the precertificate version.
+**It is up to you whether to use the precertificate or self-signed certificate version.** There is no actual difference in the firmware itself. Both were originally provided in case one or the other didn't work, but the precertificate firmware [was confirmed to work](https://github.com/RobertSundling/neato-botvac/discussions/6), and [so was the self-signed firmware](https://github.com/RobertSundling/neato-botvac/discussions/9). Eventually the precertificate firmware will no longer be able to installed, so I'd personally just go with the self-signed firmware.
 
 ### Original firmware downloads (All certificates expired)
 
@@ -92,11 +90,11 @@ I created this document to share what I learned while exploring the options to u
 
 You may wish to read the [Updating faster](#updating-faster) section below to speed up the install process.
 
-If you are reading this after March 2026 and you need to install firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
+If you need to install old firmware with an expired certificate, see the [Bypassing certificate expiration](#bypassing-certificate-expiration) section below first.
 
 ### Installing the firmware
 
-To install firmware on your Neato Botvac, you generally do *not* need to press any buttons or perform a [factory reset](#factory-reset) on your robot. You really only have to plug in a flash drive and the robot handles the rest.
+To install firmware on your Neato Botvac, you generally do *not* need to perform a [factory reset](#factory-reset) or press any complicated button sequences on your robot. You really only have to turn off the robot, plug in a flash drive, turn the robot back on, and the robot handles the rest.
 
 First, prepare a USB flash drive:
 
@@ -104,23 +102,24 @@ First, prepare a USB flash drive:
 
    > **Note:** You may need to try a couple drives. Some users have said the drive needs to be at least 16 GB (even though the firmware images themselves are under 16 MB). Others have reported problems with USB 3.x drives, with the upgrade freezing during the "copying logs" stage, and suggest USB 2.0 drives. I've had perfect success with USB 3.x drives, myself, but if you have issues, you may wish to try another drive.
   
-2. Create a folder on the flash drive named `RobotData`. Capitalization is important.
-3. Copy the firmware `.tgz` file directly into the `RobotData` folder on the flash drive. Do not extract the contents of the archive; the robot will do this itself.
+1. Create a folder on the flash drive named `RobotData`. Capitalization is important.
+1. Copy the firmware `.tgz` file directly into the `RobotData` folder on the flash drive. Do not extract the contents of the archive; the robot will do this itself.
 
-At this point, I suggest having the robot fully charged and on its charging base. Ensure the robot is turned on. Then:
+At this point, I suggest having the robot fully charged and on its charging base. Then:
+
+1. Power down the robot by pressing and holding the power button until the robot turns off.
+
+    > **Note:** This guide didn't used to include this power-down step. However, [multiple](https://github.com/RobertSundling/neato-botvac/discussions/6) [users](https://github.com/RobertSundling/neato-botvac/discussions/9) have had to power-cycle the robot to get the new firmware to take effect. So I have added this step to the guide.
 
 1. Remove the robot's dustbin to expose its micro USB port.
-2. Plug the flash drive into your robot using a [USB OTG cable](#usb-otg-cable). 
-3. The robot will automatically detect the firmware file and begin the update process, with the lights on the left flashing rhythmically.
-4. The robot will play a sound and reboot once the update is complete.
+1. Plug the flash drive into your robot using a [USB OTG cable](#usb-otg-cable).
+1. Power the robot back up by pressing and holding the power button until the robot turns on.
+1. The robot will automatically detect the firmware file and begin the update process, with the lights on the left flashing rhythmically.
+1. The robot will play a sound and reboot once the update is complete.
 
-   > **Note:** [At least one user](https://github.com/RobertSundling/neato-botvac/discussions/6) had to power-cycle the robot after the robot rebooted to get the new firmware to take effect. If the new firmware does not appear to be installed, you may wish to try powering the robot off and back on again.
+In my experience, if I have cleared the log files first (as explained in the [Updating faster](#updating-faster) section), the update process only takes a minute or two. If the firmware update did not take, you may wish to try keeping the USB flash drive connected and power-cycling again.
 
-In my experience, if I have cleared the log files first (as explained in the [Updating faster](#updating-faster) section), the update process only takes a minute or two.
-
-
-
-**You would be well-advised to *not* interrupt a firmware update while in progress.** 
+**You would be well-advised to *not* interrupt a firmware update while in progress.** You'll notice the lights flashing a lot more than normal. Wait until that stops before doing anything.
 
 ### After the update
 
@@ -178,15 +177,13 @@ Now we need to replace the `Signing.crt` file with something else. We have two o
 
 It is possible to replace the expired certificate with a non-expired neato.cloud precertificate. For example, there is a neato.cloud precertificate that expires in March 2026.
 
-Full details on this method are provided in the [Precertificate Firmware](./precertificate-firmware/README.md) directory of this repository. Rather than read that, alternatively you can simply download ready-to-use firmware images created in this way directly from the [links above](#firmware-download-links).
+Full details on this method are provided in the [Precertificate Firmware](./precertificate-firmware/README.md) directory of this repository.  You can also download a ready-to-use firmware image created in this way directly from the [link above](#firmware-download-links).
 
 #### Signing the firmware with a self-signed certificate
 
-It *may* be possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This would work if the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
+It is also possible to sign the firmware with a self-signed certificate that you generate yourself, with an expiration date hundreds of years in the future. This works because the robot does not verify the certificate chain, and does not use the certificate for anything other than the initial signature verification.
 
-*As of this writing, this method has not yet been tested.*
-
-However, full, detailed instructions for this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository. You can also download a ready-to-use firmware image created in this way directly from the [link above](#firmware-download-links).
+Full detaileds on this method are provided in the [Self-Signed Firmware](./self-signed-firmware/README.md) directory of this repository. You can also download a ready-to-use firmware image created in this way directly from the [link above](#firmware-download-links).
 
 ### Faking the date
 
@@ -208,7 +205,7 @@ You may be able to first remove the battery from your robot (so that it loses th
 
 Once you have done one of those, then reinstall the battery. The robot should turn back on but be unable to obtain the current date and time.
 
-**Important note:** If the robot stores the last-known date and time somewhere in non-volatile memory, this may not work. It might just reset to that. Whether or not it does this is unknown. Therefore, if you try this, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.
+**Important note:** I am continuously working to make this guide as easy-to-use as possible. If you try any of these methods, whether or not they work for you, please create a [GitHub discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.
 
 There is also a guaranteed known-working way to do this. You can instead do a full factory reset on your robot, disconnect the battery, then reinstall it. [Here is a tutorial from u/cof53a on reddit](https://www.reddit.com/r/NeatoRobotics/comments/13oryys/refreshed_d3_thru_d7_453_firmware_for_manual_usb/kv6bujz/). However, a factory reset should generally be avoided if possible, so only try this if nothing else works.
 
@@ -217,7 +214,6 @@ There is also a guaranteed known-working way to do this. You can instead do a fu
 The robot obtains its date from the pool.ntp.org NTP servers. You can set your router to redirect the robot to your own NTP server, using something like Pi-hole or a custom DNS server. You could then configure your own NTP server to return a date before the certificate expiration date.
 
 Explaining how to do this is beyond the scope of this document and is left as an exercise for advanced readers.
-
 
 ## Firmware version notes
 
@@ -258,4 +254,4 @@ The SHA256 hash of the `Neato_4.2.0_102.bin` file, which is the actual firmware 
 
 ## Feedback
 
-If you try one of these firmware images, whether or not your robot accepts the firmware, or if you notice any problems with or have any suggestions for this document, please open a GitHub [issue](https://github.com/RobertSundling/neato-botvac/issues) or [discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.
+If you try one of these firmware images, whether or not your robot accepts the firmware, or if you notice any problems with or have any suggestions for this document, please create a [GitHub discussion](https://github.com/RobertSundling/neato-botvac/discussions) on this repository to report your findings.

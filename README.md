@@ -2,11 +2,43 @@
 
 **Quick tip:** If you came here just to get firmware with a non-expired certificate, and otherwise know what you're doing, jump to the [Firmware download links](#firmware-download-links) section. There are working firmware images there.
 
+## IMPORTANT UPDATE (October 2025)
+
+As of October 6, 2025, Vorwerk & Co. KG, the parent company of Neato Robotics, has [given notice](https://support.neatorobotics.com/support/solutions/articles/204000073686-announcement-6th-oct-2025) ([Internet Archive version](https://web.archive.org/web/20251008041252/https://support.neatorobotics.com/support/solutions/articles/204000073686-announcement-6th-oct-2025)) that they are discontinuing support for Neato robots.
+
+I received this email announcement on October 19, 2025:
+
+> ### Your robot was blocked.
+>
+> Hello,
+> 
+> We want to inform you that Neato cloud services are being phased out during Q4 2025.
+> 
+> Since Neato ceased operations in 2023, Vorwerk has continued maintaining the Neato cloud platform to honour the original five-year service promise. However, cybersecurity standards, compliance obligations, and regulations have advanced in ways that make it no longer possible to safely and sustainably operate these legacy systems.
+> 
+> What this means for you
+> 
+> * Your Neato robot *[Robot Name Here]* cannot connect anymore in the app.
+> * It will continue to function manually — simply press the button once to launch a full house run.
+> * Customer support and guidance remain available at neatorobotics.com.
+> 
+> This decision affects only Neato Robotics. Other Vorwerk products and services remain fully unaffected.
+> 
+> We know this change impacts how you use your Neato robot, and it was not taken lightly. It reflects our duty to protect your data, your safety, and your trust.
+> 
+> Thank you for your understanding and for being part of the Neato community all those years.
+
+So far, I have received this notice for one of my two robots, but both of them now show as offline in the app. The app gives me a message that it believes my phone is "offline" as well, saying "It seems you are not connected to the Internet." This is likely because their cloud servers no longer exist.
+
+**Without the cloud infrastructure in place, even with the latest firmware updates, your robot will no longer be able to connect to the Neato app.** References in this document to using the Neato app to check your firmware version are no longer applicable.
+
 ## Table of contents
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
+- [IMPORTANT UPDATE (October 2025)](#important-update-october-2025)
+  - [Your robot was blocked.](#your-robot-was-blocked)
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Firmware download links](#firmware-download-links)
